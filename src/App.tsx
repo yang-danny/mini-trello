@@ -1,14 +1,21 @@
 
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+import Home from "./pages/Home";
+import Layout from "./pages/Layout";
+
 function App() {
 
-
-  return (
-    <>
-      <div>
-        Mini Trello
-      </div>
-    </>
+	return (
+    <BrowserRouter>
+ <Routes>
+  <Route path='/' element={<Layout />}>
+    <Route path='' element={<Home />} />
+    <Route path='/catalog' element={<>Catalog</>} />
+  
+  </Route>
+ </Routes>
+ </BrowserRouter>
   )
 }
 
-export default App
+export default App;
