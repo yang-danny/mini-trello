@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 //Test task and target page
 test.describe('Home Page E2E', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:5173');
+    await page.goto('https://minitrello0.netlify.app');
   });
 
   
