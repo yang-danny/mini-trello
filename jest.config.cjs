@@ -1,7 +1,4 @@
-// module.exports={
-// preset:"ts-jest",
-// testMatch:"['**/*.test.ts']"
-// }
+
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
@@ -15,4 +12,5 @@ module.exports = {
     '\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/__mocks__/fileMock.js',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  testPathIgnorePatterns: ['/node_modules/', '/tests/e2e/'],
 };
