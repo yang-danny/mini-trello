@@ -4,7 +4,7 @@ export default defineConfig({
   testDir: './tests', // or './tests/e2e' if you use a subfolder for E2E
   testMatch: /.*\.spec\.ts$/, // Only run files ending with .spec.ts
   use: {
-    baseURL: 'http://localhost:5173', // Change if your dev server runs on a different port
+    baseURL: 'https://minitrello0.netlify.app/', // Change if your dev server runs on a different port
     headless: true,
   },
 });
