@@ -1,0 +1,38 @@
+name: Vite React CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16' # You can specify the version of Node.js
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Run tests (optional if you have tests)
+      - name: Run tests
+        run: npm run test
+
+      # Build the app
+      - name: Build app
+        run: npm run build
+
+      # Optionally deploy to a hosting service like Vercel or Netlify (optional)
