@@ -30,7 +30,9 @@ jobs:
       # Run tests (optional if you have tests)
       - name: Run tests
         run: npm run test
-      - name: Run Playwright tests
+        - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+        - name: Run Playwright tests
         run: npx playwright test
       # Build the app
       - name: Build app
