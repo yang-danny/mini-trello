@@ -1,13 +1,8 @@
 export type Task = {
-    _id: number;
+    id: number;
     userId:number;
     title: string;
     body: string;
     status: 'Todo' | 'Doing' | 'Done';
   }
-  export type FetchTaskPayload={
-    _id: number;
-    userId:number;
-    title: string;
-    body: string;
-    }
+ export type TaskStatus = "Todo" | "Doing" | "Done";

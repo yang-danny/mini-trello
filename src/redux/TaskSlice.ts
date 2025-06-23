@@ -1,13 +1,14 @@
-import { createAsyncThunk, createSlice, type PayloadAction, } from "@reduxjs/toolkit";
-
+import { createAsyncThunk, createSlice, } from "@reduxjs/toolkit";
 import axios from "axios";
-import type { FetchTaskPayload, Task } from "../model/Task";
+import type { Task } from "../model/Task";
+
 interface TaskSliceState {
     loadTasks: Task[];
     loading: boolean;
     error:boolean;
     changeStatus: boolean;
 }
+
 const initialState: TaskSliceState = {
     loadTasks: [],
     loading: false,
@@ -15,21 +16,40 @@ const initialState: TaskSliceState = {
     changeStatus: false
 
 };
-export const fetchTask= createAsyncThunk(
-    'task/fetch',
-    async (payload:FetchTaskPayload, thunkAPI) =>{
-        try {
-            const req= await axios.get('https://jsonplaceholder.typicode.com/posts')
-            const tasks = req.data
-            return {
-                tasks,
-            }
-        } catch (error) {
-            return thunkAPI.rejectWithValue(error)
-        }
-    }
-)
 
+export const fetchTask = createAsyncThunk<{ tasks: Task[] }, void>(
+    'task/fetchTask',
+    async () => {
+        try {
+            const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
+        const tasks: Task[] = response.data;
+        return { tasks };
+        } catch (error) {
+        throw Error("Load tasks failed with: "+error)
+        }
+        
+    }
+);
+
+export const updateTask=createAsyncThunk(
+    'task/update',
+   async(payload:Task, thunkAPI)=>{
+    try {
+        /*
+        // const response=await axios.patch(`https://jsonplaceholder.typicode.com/posts/${payload.id}`,payload)
+        // return response.data.task
+        */
+        // Simulate backend update
+        console.log(`Update task status with backend: id:${payload.id} title:${payload.title} body:${payload.body} status:${payload.status} `);
+        return payload
+    } catch (error) {
+         if (axios.isAxiosError(error) && error.response) {
+                return thunkAPI.rejectWithValue(error.response.data);
+            }
+            return thunkAPI.rejectWithValue((error as Error).message);
+    }
+   }
+)
 export const TaskSlice = createSlice({
     name: "task",
     initialState,
@@ -45,7 +65,7 @@ export const TaskSlice = createSlice({
     extraReducers: (builder) => {
         builder
         
-            .addCase(fetchTask.pending, (state, action)=>{
+            .addCase(fetchTask.pending, (state)=>{
                 state={
                     ...state,
                     loading: true,
@@ -53,17 +73,34 @@ export const TaskSlice = createSlice({
                 }
                 return state;
             })
-            
-            .addCase(fetchTask.fulfilled,(state,action)=>{
+            .addCase(updateTask.pending,(state)=>{
                 state={
                     ...state,
-                   [action.payload.tasks]:action.payload.tasks,
-                   loading:false
+                    loading:true,
+                    error:false
                 }
                 return state
             })
-            
-            .addCase(fetchTask.rejected, (state, action)=>{
+            .addCase(fetchTask.fulfilled, (state, action) => {
+                state = {
+                    ...state,
+                    loadTasks: action.payload?.tasks || [],
+                    loading: false
+                }
+                return state;
+            })
+
+            .addCase(updateTask.fulfilled, (state, action) => {
+                 state = {
+                 ...state,
+                 loadTasks: state.loadTasks.map(task =>
+                 task.id === action.payload.id ? { ...task, ...action.payload } : task
+                ),
+                 loading: false
+                }
+                return state;
+            })
+            .addCase(fetchTask.rejected, (state)=>{
                 state={
                     ...state,
                     error: true,
@@ -71,7 +108,14 @@ export const TaskSlice = createSlice({
                 }
                 return state
             })
-           
+           .addCase(updateTask.rejected,(state)=>{
+            state={
+                ...state,
+                error:true,
+                loading:false
+            }
+            return state
+           })
     }
 });
 
