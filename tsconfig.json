@@ -9,7 +9,7 @@
     "strict": true,
     "moduleResolution": "node",
     "skipLibCheck": true,
-    "types": ["cypress"]
+    "types": ["@playwright/test"]
   },
   "include": ["src", "src/__test__"]
 }

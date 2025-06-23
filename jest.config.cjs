@@ -12,5 +12,6 @@ module.exports = {
     '\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/__mocks__/fileMock.js',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  modulePathIgnorePatterns: ['\\.spec\\.(js|ts)$'],
   testPathIgnorePatterns: ['/node_modules/', '/tests/e2e/'],
 };
