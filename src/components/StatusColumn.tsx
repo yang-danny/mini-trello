@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { TaskCard } from './TaskCard';
 import { TaskModal } from './TaskModal';
 import type { TaskStatus } from '../model/Task';
-
+import { FixedSizeList as List } from 'react-window';
+import { VirtualList } from './VirtualList';
 
 interface Task {
   id: number;
@@ -44,7 +45,16 @@ export const StatusColumn: React.FC<StatusColumnProps> = ({ title, tasks, onAddT
   const handleSubmit = (task: { title: string; body: string }) => {
     onAddTask({ ...task, status: title });
   };
-
+  const handleKeyboardMove = (taskId: number, direction: 'next' | 'prev') => {
+    const statusOrder: TaskStatus[] = ['Todo', 'Doing', 'Done'];
+    const currentIdx = statusOrder.indexOf(title as TaskStatus);
+    const newIdx = direction === 'next'
+      ? Math.min(currentIdx + 1, statusOrder.length - 1)
+      : Math.max(currentIdx - 1, 0);
+    if (newIdx !== currentIdx) {
+      onTaskDrop(taskId, statusOrder[newIdx]);
+    }   
+  };
 
   return (
      <div
@@ -62,18 +72,37 @@ export const StatusColumn: React.FC<StatusColumnProps> = ({ title, tasks, onAddT
        <span className='text-base text-sky-500 '>Total {tasks.length} task(s)</span>
       </h2>
 
-      <div className="space-y-3">
 
-        {tasks.map((task) => (
+      <div className="space-y-3">
+        {tasks.length > 300 ? (
+        <List
+        height={600}
+        itemCount={tasks.length}
+        itemSize={80}
+        width="100%"
+        >
+         {({ index, style }) => (
+        <VirtualList
+          index={index}
+          style={style}
+          tasks={tasks}
+          onDelete={onDeleteTask}
+          onKeyboardMove={handleKeyboardMove}
+          />
+        )}
+        </List>
+        ) : (
+        tasks.map((task) => (
         <TaskCard
         key={task.id}
         id={task.id}
         title={task.title}
         body={task.body}
         onDelete={onDeleteTask}
+        onKeyboardMove={handleKeyboardMove}
         />
         ))
-        }
+        )}
       </div>
       <div className="mt-6">
         <button

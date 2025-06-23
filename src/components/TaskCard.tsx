@@ -1,15 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 interface TaskCardProps {
   id:number;
   title: string;
   body: string;
   onDelete?: (id: number) => void; 
+  onKeyboardMove?:(id: number, direction: 'next' | 'prev') => void; 
 }
 
-export const TaskCard: React.FC<TaskCardProps> = ({ id, title, body, onDelete}) => {
+export const TaskCard: React.FC<TaskCardProps> = ({ id, title, body, onDelete, onKeyboardMove}) => {
   const [showBody, setShowBody] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowRight') {
+      onKeyboardMove?.(id, 'next');
+      e.preventDefault();
+    } else if (e.key === 'ArrowLeft') {
+      onKeyboardMove?.(id, 'prev');
+      e.preventDefault();
+    }
+  };
   const handleToggle = (e: React.MouseEvent) => {
   e.stopPropagation();
   setShowBody((prev) => !prev);
@@ -23,10 +34,14 @@ export const TaskCard: React.FC<TaskCardProps> = ({ id, title, body, onDelete}) 
 
   return (
         <div
+        ref={cardRef}
+        role="listitem"
+        tabIndex={0}
         className=" relative border p-3 rounded-lg bg-white hover:shadow transition cursor-pointer flex flex-col"
         onClick={handleToggle}
         draggable
         onDragStart={handleDragStart}
+        onKeyDown={handleKeyDown}
         >
         <div className=" flex items-center justify-between">
           <span className="font-medium text-gray-600 text-lg flex-1">{title}</span>
