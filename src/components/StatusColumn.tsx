@@ -3,6 +3,7 @@ import { TaskCard } from './TaskCard';
 import { TaskModal } from './TaskModal';
 import type { TaskStatus } from '../model/Task';
 
+
 interface Task {
   id: number;
   title: string;
